@@ -14,19 +14,17 @@ class Longtext {
 	 * @param array  $return_value current return value
 	 * @param array  $params       supplied params
 	 *
-	 * @return array
+	 * @return void|array
 	 */
 	public static function process($hook, $type, $return_value, $params) {
 		
-		$oembed = (bool) elgg_extract('oembed', $return_value, true);
-		unset($return_value['oembed']);
-		if (!$oembed) {
-			return $return_value;
+		if (!(bool) elgg_extract('oembed', $return_value, true)) {
+			return;
 		}
 		
 		$value = elgg_extract('value', $return_value);
-		if (empty($value)) {
-			return $return_value;
+		if ($value) {
+			return;
 		}
 		
 		if (elgg_extract('sanitize', $return_value, true)) {
