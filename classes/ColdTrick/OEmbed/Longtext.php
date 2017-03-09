@@ -23,7 +23,7 @@ class Longtext {
 		}
 		
 		$value = elgg_extract('value', $return_value);
-		if ($value) {
+		if (empty($value)) {
 			return;
 		}
 		
