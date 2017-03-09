@@ -69,9 +69,9 @@ class Process {
 		
         $chunks = preg_split('/(<.+?>)/is', $this->text, 0, PREG_SPLIT_DELIM_CAPTURE);
 		
+        $chunk_count = count($chunks);
         $openTag = null;
-		
-        for ($i = 0; $i < count($chunks); $i++) {
+		for ($i = 0; $i < $chunk_count; $i++) {
         	
         	if (empty(trim($chunks[$i]))) {
         		continue;
