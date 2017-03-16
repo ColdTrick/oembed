@@ -48,6 +48,10 @@ class Process {
 	/**
 	 * Parse the text through oEmbed
 	 *
+	 * Code for getting the correct parts is taken from Linkify
+	 *
+	 * @see https://github.com/misd-service-development/php-linkify
+	 *
 	 * @return string
 	 */
 	public function parseText() {
@@ -80,7 +84,7 @@ class Process {
             if ($i % 2 === 0) { // even numbers are text
                 // Only process this chunk if there are no unclosed $ignoreTags
                 if (null === $openTag) {
-                    $replacement = $this->replaceUrl($chunks[$i]);
+                    $replacement = $this->replaceText($chunks[$i]);
                     if (!empty($replacement)) {
                     	$chunks[$i] = $replacement;
                     }
@@ -103,6 +107,61 @@ class Process {
         
 		// return new text
 		return implode('', $chunks);
+	}
+	
+	/**
+	 * Replace oembed urls in the given text
+	 *
+	 * @param string $text the text to check for URLs
+	 *
+	 * @return string
+	 */
+	protected function replaceText($text) {
+		
+		if (empty($text) || !is_string($text)) {
+			return $text;
+		}
+		
+		$pattern = '~(?xi)
+              (?:
+                (https?://)                        # scheme://
+                |                                  #   or
+                www\d{0,3}\.                       # "www.", "www1.", "www2." ... "www999."
+                |                                  #   or
+                www\-                              # "www-"
+                |                                  #   or
+                [a-z0-9.\-]+\.[a-z]{2,4}(?=/)      # looks like domain name followed by a slash
+              )
+              (?:                                  # Zero or more:
+                [^\s()<>]+                         # Run of non-space, non-()<>
+                |                                  #   or
+                \(([^\s()<>]+|(\([^\s()<>]+\)))*\) # balanced parens, up to 2 levels
+              )*
+              (?:                                  # End with:
+                \(([^\s()<>]+|(\([^\s()<>]+\)))*\) # balanced parens, up to 2 levels
+                |                                  #   or
+                [^\s`!\-()\[\]{};:\'".,<>?«»“”‘’]  # not a space or one of these punct chars
+              )
+        ~';
+
+        $callback = function ($match) {
+            $caption = $match[0];
+            $pattern = "~^https?://~";
+			
+            if (0 === preg_match($pattern, $match[0])) {
+                $match[0] = 'http://' . $match[0];
+            }
+            
+            $replacement = $this->replaceUrl($match[0]);
+            if (empty($replacement)) {
+            	// nothing was replaced
+            	return $match[0];
+            }
+            
+            return $replacement;
+        };
+
+        return preg_replace_callback($pattern, $callback, $text);
 	}
 	
 	/**
@@ -226,6 +285,7 @@ class Process {
 			$adapter = Embed::create($url);
 		} catch (\Exception $e) {
 			$adapter = null;
+			elgg_log($e->getMessage());
 		}
 		
 		$this->cacheAdapter($url, $adapter);
