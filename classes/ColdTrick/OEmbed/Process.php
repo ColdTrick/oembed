@@ -145,7 +145,6 @@ class Process {
         ~';
 
         $callback = function ($match) {
-            $caption = $match[0];
             $pattern = "~^https?://~";
 			
             if (0 === preg_match($pattern, $match[0])) {
