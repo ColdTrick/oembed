@@ -24,3 +24,22 @@ echo elgg_view_field([
 	'value' => $plugin->blacklist,
 	'rows' => 4,
 ]);
+
+// proxy support
+echo elgg_view_field([
+	'#type' => 'text',
+	'#label' => elgg_echo('oembed:settings:proxy_host'),
+	'#help' => elgg_echo('oembed:settings:proxy_host:help'),
+	'name' => 'params[proxy_host]',
+	'value' => $plugin->proxy_host,
+]);
+
+echo elgg_view_field([
+	'#type' => 'number',
+	'#label' => elgg_echo('oembed:settings:proxy_port'),
+	'#help' => elgg_echo('oembed:settings:proxy_port:help'),
+	'name' => 'params[proxy_port]',
+	'value' => $plugin->proxy_port,
+	'min' => 0,
+	'max' => 65536,
+]);

@@ -2,6 +2,7 @@
 
 namespace ColdTrick\OEmbed;
 
+use Embed\Http\CurlDispatcher;
 use Embed\Http\Url;
 use Embed\Adapters\Adapter;
 use Embed\Embed;
@@ -11,6 +12,7 @@ class Process {
 	protected $text;
 	protected $whitelist;
 	protected $blacklist;
+	protected $curldispatcher;
 	
 	public function __construct($text) {
 		$this->text = $text;
@@ -281,7 +283,9 @@ class Process {
 		}
 		
 		try {
-			$adapter = Embed::create($url);
+			$dispatcher = $this->getCurlDispatcher();
+			
+			$adapter = Embed::create($url, [], $dispatcher);
 		} catch (\Exception $e) {
 			$adapter = null;
 			elgg_log($e->getMessage());
@@ -343,5 +347,38 @@ class Process {
 		}
 		
 		return elgg_save_system_cache($cache_name, serialize($adapter));
+	}
+	
+	/**
+	 * Get a special cURL dispatcher with proxy support
+	 *
+	 * @return void|CurlDispatcher
+	 */
+	protected function getCurlDispatcher() {
+		
+		if (isset($this->curldispatcher)) {
+			if (empty($this->curldispatcher)) {
+				return;
+			}
+			
+			return $this->curldispatcher;
+		}
+		
+		$host = elgg_get_plugin_setting('proxy_host', 'oembed');
+		if (empty($host)) {
+			return;
+		}
+		
+		$curl_settings = [
+			CURLOPT_PROXY => $host,
+		];
+		
+		$port = (int) elgg_get_plugin_setting('proxy_port', 'oembed');
+		if (($port > 0) && ($port <= 65536)) {
+			$curl_settings[CURLOPT_PROXYPORT] = $port;
+		}
+		
+		$this->curldispatcher = new CurlDispatcher($curl_settings);
+		return $this->curldispatcher;
 	}
 }
