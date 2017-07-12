@@ -1,6 +1,10 @@
 Version history
 ===============
 
+1.0 (2017-07-12):
+
+- added: proxy support
+
 1.0-beta.1 (2017-06-14):
 
 - added: oembed replace logic
