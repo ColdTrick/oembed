@@ -26,6 +26,12 @@ is flushed requests will be made again.
 
 In order to prevent the use of oEmbed on your use of `output/longtext` set a var `'oembed' => false`.
 
+### Modifying valid URL
+
+Before an oEmbed adapter is created based on a valid URL a hook is triggered. This allows last minute changes to the URL (eg. adding
+vaidation tokens).
+The hook is `replace_url`, `oembed`. The return value should be an URL. in the `$params` you get the original url under `url`.
+
 ### Output views
 
 To change the output of the oEmbed code the different types have their own view `oembed/type/{$oembed_type}`.

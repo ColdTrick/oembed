@@ -182,6 +182,8 @@ class Process {
 			return;
 		}
 		
+		$url = elgg_trigger_plugin_hook('replace_url', 'oembed', ['url' => $url], $url);
+		
 		$adapter = $this->getAdapter($url);
 		if (empty($adapter)) {
 			return;
