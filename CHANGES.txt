@@ -1,6 +1,10 @@
 Version history
 ===============
 
+1.1 (2017-12-14):
+
+- added: plugin hook to allow changing valid oEmbed URLs
+
 1.0 (2017-07-12):
 
 - added: proxy support
