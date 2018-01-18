@@ -11,4 +11,6 @@ return [
 	'oembed:settings:proxy_host:help' => "If you need to fetch URLs through a proxy server you can configure the host here.",
 	'oembed:settings:proxy_port' => "Proxy port",
 	'oembed:settings:proxy_port:help' => "Configure the port number for your proxy server here.",
+	'oembed:settings:default_height' => "Height for embedded content",
+	'oembed:settings:default_height:help' => "Configure the height for embedded content.",
 ];
