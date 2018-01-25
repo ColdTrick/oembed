@@ -1,6 +1,10 @@
 Version history
 ===============
 
+1.2 (2018-01-25):
+
+- added: plugin setting to change height of embedded content
+
 1.1 (2017-12-14):
 
 - added: plugin hook to allow changing valid oEmbed URLs
