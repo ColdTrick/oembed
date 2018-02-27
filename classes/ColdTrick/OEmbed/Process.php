@@ -9,12 +9,39 @@ use Embed\Embed;
 
 class Process {
 	
+	/**
+	 * @var string the text to process
+	 */
 	protected $text;
+	
+	/**
+	 * @var array whitelisted domains
+	 */
 	protected $whitelist;
+	
+	/**
+	 * @var array blacklisted domains
+	 */
 	protected $blacklist;
+	
+	/**
+	 * @var CurlDispatcher
+	 */
 	protected $curldispatcher;
 	
+	/**
+	 * Create a new oEmbed processor
+	 *
+	 * @param string $text the text to parse
+	 *
+	 * @throws \InvalidArgumentException
+	 */
 	public function __construct($text) {
+		
+		if (!is_string($text)) {
+			throw new \InvalidArgumentException(__METHOD__ . ' needs the text argument to be a string: ' . gettype($text) . ' given');
+		}
+		
 		$this->text = $text;
 		
 		$whitelist = elgg_get_plugin_setting('whitelist', 'oembed');
@@ -39,7 +66,7 @@ class Process {
 	/**
 	 * Create a new processor
 	 *
-	 * @param string $text
+	 * @param string $text the text to parse
 	 *
 	 * @return \ColdTrick\OEmbed\Process
 	 */

@@ -33,8 +33,12 @@ class Longtext {
 		}
 		$return_value['sanitize'] = false;
 		
-		$processor = Process::create($value);
-		$return_value['value'] = $processor->parseText();
+		try {
+			$processor = Process::create($value);
+			$return_value['value'] = $processor->parseText();
+		} catch (\InvalidArgumentException $e) {
+			// non text value passed to Proccessor
+		}
 		
 		return $return_value;
 	}
