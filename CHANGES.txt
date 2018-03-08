@@ -1,6 +1,10 @@
 Version history
 ===============
 
+1.2.1 (2018-03-08):
+
+- fixed: PHP warnings when passing a non string value to Processor
+
 1.2 (2018-01-25):
 
 - added: plugin setting to change height of embedded content
