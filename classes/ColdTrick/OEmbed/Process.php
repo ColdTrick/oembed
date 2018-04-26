@@ -71,7 +71,7 @@ class Process {
 	 * @return \ColdTrick\OEmbed\Process
 	 */
 	public static function create($text) {
-		return new self($text);
+		return new static($text);
 	}
 	
 	/**
