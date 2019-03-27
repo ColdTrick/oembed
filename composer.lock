@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "composer/ca-bundle",
-            "version": "1.1.1",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "d2c0a83b7533d6912e8d516756ebd34f893e9169"
+                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/d2c0a83b7533d6912e8d516756ebd34f893e9169",
-                "reference": "d2c0a83b7533d6912e8d516756ebd34f893e9169",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
+                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
                 "shasum": ""
             },
             "require": {
@@ -60,20 +60,20 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2018-03-29T19:57:20+00:00"
+            "time": "2019-01-28T09:30:10+00:00"
         },
         {
             "name": "composer/installers",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "049797d727261bf27f2690430d935067710049c2"
+                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/049797d727261bf27f2690430d935067710049c2",
-                "reference": "049797d727261bf27f2690430d935067710049c2",
+                "url": "https://api.github.com/repos/composer/installers/zipball/cfcca6b1b60bc4974324efb5783c13dca6932b5b",
+                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b",
                 "shasum": ""
             },
             "require": {
@@ -180,20 +180,20 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2017-12-29T09:13:20+00:00"
+            "time": "2018-08-27T06:10:37+00:00"
         },
         {
             "name": "embed/embed",
-            "version": "v3.3.1",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oscarotero/Embed.git",
-                "reference": "038265bc1169f29ef5e19b7210eff1f223c66b0b"
+                "reference": "4f0d7c0ba8dce13228fd35b7a73cd4ef5ab0f02c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oscarotero/Embed/zipball/038265bc1169f29ef5e19b7210eff1f223c66b0b",
-                "reference": "038265bc1169f29ef5e19b7210eff1f223c66b0b",
+                "url": "https://api.github.com/repos/oscarotero/Embed/zipball/4f0d7c0ba8dce13228fd35b7a73cd4ef5ab0f02c",
+                "reference": "4f0d7c0ba8dce13228fd35b7a73cd4ef5ab0f02c",
                 "shasum": ""
             },
             "require": {
@@ -233,7 +233,7 @@
                 "opengraph",
                 "twitter cards"
             ],
-            "time": "2018-02-24T11:23:18+00:00"
+            "time": "2019-02-25T15:07:28+00:00"
         }
     ],
     "packages-dev": [
@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ColdTrick/releases.git",
-                "reference": "60cbbc82f4b5164723d2b40029fead1c5f2715dd"
+                "reference": "bc13aa2831343af35df21022a8458871908111b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ColdTrick/releases/zipball/60cbbc82f4b5164723d2b40029fead1c5f2715dd",
-                "reference": "60cbbc82f4b5164723d2b40029fead1c5f2715dd",
+                "url": "https://api.github.com/repos/ColdTrick/releases/zipball/bc13aa2831343af35df21022a8458871908111b6",
+                "reference": "bc13aa2831343af35df21022a8458871908111b6",
                 "shasum": ""
             },
             "type": "library",
@@ -262,7 +262,7 @@
                 "release",
                 "travis"
             ],
-            "time": "2017-11-01T09:37:42+00:00"
+            "time": "2019-01-11T08:49:49+00:00"
         },
         {
             "name": "coldtrick/sniffs",
@@ -293,16 +293,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.2.3",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "4842476c434e375f9d3182ff7b89059583aa8b27"
+                "reference": "5b4333b4010625d29580eb4a41f1e53251be6baa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/4842476c434e375f9d3182ff7b89059583aa8b27",
-                "reference": "4842476c434e375f9d3182ff7b89059583aa8b27",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/5b4333b4010625d29580eb4a41f1e53251be6baa",
+                "reference": "5b4333b4010625d29580eb4a41f1e53251be6baa",
                 "shasum": ""
             },
             "require": {
@@ -335,12 +335,12 @@
                 }
             ],
             "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
-            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "homepage": "https://github.com/squizlabs/PHP_CodeSniffer",
             "keywords": [
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-02-20T21:35:23+00:00"
+            "time": "2019-03-19T03:22:27+00:00"
         }
     ],
     "aliases": [],
