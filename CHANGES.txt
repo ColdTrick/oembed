@@ -1,6 +1,14 @@
 Version history
 ===============
 
+2.0 (2019-03-27):
+
+- added: Dutch translation
+- changed: increased minimal Elgg version requirement to 3.0
+- changed: moved plugin init function to Bootstrap
+- changed: reworked plugin for Elgg 3.0
+- changed: updated to embed 3.3
+
 1.2.1 (2018-03-08):
 
 - fixed: PHP warnings when passing a non string value to Processor
