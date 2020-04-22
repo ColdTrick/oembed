@@ -1,6 +1,11 @@
 Version history
 ===============
 
+2.1 (2020-04-22):
+
+- added: support for microsoft streams urls
+- changed: updated embed/embed dependency to v3.4.x
+
 2.0.1 (2019-03-28):
 
 - several small chores/fixes
