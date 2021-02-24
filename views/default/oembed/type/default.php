@@ -9,28 +9,37 @@
 use Embed\Adapters\Adapter;
 
 $adapter = elgg_extract('adapter', $vars);
-if (!($adapter instanceof Adapter)) {
+if (!$adapter instanceof Adapter) {
 	return;
 }
 
+
+$new_height = (int) elgg_get_plugin_setting('default_height', 'oembed', 300);
+
 // change embed width to 100%
-$adjust_width = function($match) {
+$adjust_width = function($match) use ($new_height) {
 	
 	if (!isset($match[1])) {
 		return $match[0];
 	}
 	
-	return 'width="100%"';
+	$width = 'width="100%"';
+	
+	if ($new_height) {
+		// assume dimension of 16x9
+		$width .= ' style="max-width: ' . round(($new_height / 9) * 16) . 'px"';
+	}
+	
+	return $width;
 };
+
 // adjust embed height to plugin setting (if any)
-$adjust_height = function($match) {
+$adjust_height = function($match) use ($new_height) {
 	
 	if (!isset($match[1])) {
 		return $match[0];
 	}
-	
-	$new_height = (int) elgg_get_plugin_setting('default_height', 'oembed', 300);
-	
+
 	return "height=\"{$new_height}\"";
 };
 
