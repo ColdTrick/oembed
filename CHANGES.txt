@@ -1,6 +1,11 @@
 Version history
 ===============
 
+2.2 (2021-03-02):
+
+- added: French translation
+- fix: set max width of embedded content to max pixels based on height
+
 2.1 (2020-04-22):
 
 - added: support for microsoft streams urls
