@@ -393,7 +393,12 @@ class Process {
 			return $this->curldispatcher;
 		}
 		
-		$host = elgg_get_plugin_setting('proxy_host', 'oembed');
+		$proxy_config = elgg_get_config('proxy');
+		if (empty($proxy_config) || !is_array($proxy_config)) {
+			return;
+		}
+		
+		$host = elgg_extract('host', $proxy_config);
 		if (empty($host)) {
 			return;
 		}
@@ -402,9 +407,19 @@ class Process {
 			CURLOPT_PROXY => $host,
 		];
 		
-		$port = (int) elgg_get_plugin_setting('proxy_port', 'oembed');
+		$port = (int) elgg_extract('port', $proxy_config);
 		if (($port > 0) && ($port <= 65536)) {
 			$curl_settings[CURLOPT_PROXYPORT] = $port;
+		}
+		
+		if (!(bool) elgg_extract('verify_ssl', $proxy_config, true)) {
+			$curl_settings[CURLOPT_SSL_VERIFYHOST] = false;
+		}
+		
+		$username = elgg_extract('username', $proxy_config);
+		$password = elgg_extract('passowrd', $proxy_config);
+		if (!empty($username) && !empty($password)) {
+			$curl_settings[CURLOPT_PROXYUSERPWD] = "{$username}:{$password}";
 		}
 		
 		$this->curldispatcher = new CurlDispatcher($curl_settings);
