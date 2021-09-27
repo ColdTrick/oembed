@@ -2,7 +2,7 @@
 
 return [
 	'plugin' => [
-		'version' => '2.2',
+		'version' => '3.0',
 	],
 	'hooks' => [
 		'view_vars' => [
