@@ -322,7 +322,7 @@ class Process {
 		
 		$this->cacheAdapter($url, $adapter);
 		
-		if (!($adapter instanceof Adapter)) {
+		if (!$adapter instanceof Adapter) {
 			return false;
 		}
 		
@@ -371,10 +371,17 @@ class Process {
 		$crypto = elgg_build_hmac($url);
 		$cache_name = 'oembed_' . $crypto->getToken();
 		
-		if (!($adapter instanceof Adapter)) {
+		if (!$adapter instanceof Adapter) {
 			$adapter = false;
 		}
 		
+		// the htmlContent DOM Document in the Response is not serializable, this is removed silently in PHP < 8.0 but crashes if on PHP 8+
+		$response = $adapter->getResponse();
+		
+		$reflectionClass = new \ReflectionClass($response);
+		$reflectionProperty = $reflectionClass->getProperty('htmlContent');
+		$reflectionProperty->setValue($response, null); // removes the htmlContent data
+        		
 		return elgg_save_system_cache($cache_name, serialize($adapter));
 	}
 	

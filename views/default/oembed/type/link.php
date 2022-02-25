@@ -9,7 +9,7 @@
 use Embed\Adapters\Adapter;
 
 $adapter = elgg_extract('adapter', $vars);
-if (!($adapter instanceof Adapter)) {
+if (!$adapter instanceof Adapter) {
 	return;
 }
 
