@@ -380,6 +380,7 @@ class Process {
 		
 		$reflectionClass = new \ReflectionClass($response);
 		$reflectionProperty = $reflectionClass->getProperty('htmlContent');
+		$reflectionProperty->setAccessible(true);
 		$reflectionProperty->setValue($response, null); // removes the htmlContent data
         		
 		return elgg_save_system_cache($cache_name, serialize($adapter));
