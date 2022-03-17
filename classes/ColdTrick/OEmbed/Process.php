@@ -379,6 +379,19 @@ class Process {
 			$reflectionProperty = $reflectionClass->getProperty('htmlContent');
 			$reflectionProperty->setAccessible(true);
 			$reflectionProperty->setValue($response, null); // removes the htmlContent data
+			
+			$dispatcher = $adapter->getDispatcher();
+			
+			$reflectionClass = new \ReflectionClass($dispatcher);
+			$reflectionProperty = $reflectionClass->getProperty('responses');
+			
+			foreach ($reflectionProperty->getValue($dispatcher) as $sub_response) {
+				$reflectionClass = new \ReflectionClass($sub_response);
+				$reflectionProperty = $reflectionClass->getProperty('htmlContent');
+				$reflectionProperty->setAccessible(true);
+				$reflectionProperty->setValue($sub_response, null); // removes the htmlContent data
+			}
+			
 		} else {
 			$adapter = false;
 		}
