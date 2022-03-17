@@ -372,7 +372,7 @@ class Process {
 		$cache_name = 'oembed_' . $crypto->getToken();
 		
 		if ($adapter instanceof Adapter) {
-			// the htmlContent DOM Document in the Response is not serializable, this is removed silently in PHP < 8.0 but crashes if on PHP 8+
+			// the htmlContent DOMDocument in the Response is not serializable, this is removed silently in PHP < 8.0 but crashes if on PHP 8+
 			$response = $adapter->getResponse();
 			
 			$reflectionClass = new \ReflectionClass($response);
@@ -380,10 +380,12 @@ class Process {
 			$reflectionProperty->setAccessible(true);
 			$reflectionProperty->setValue($response, null); // removes the htmlContent data
 			
+			// the dispatcher also has responses with htmlContent DOMDocuments
 			$dispatcher = $adapter->getDispatcher();
 			
 			$reflectionClass = new \ReflectionClass($dispatcher);
 			$reflectionProperty = $reflectionClass->getProperty('responses');
+			$reflectionProperty->setAccessible(true);
 			
 			foreach ($reflectionProperty->getValue($dispatcher) as $sub_response) {
 				$reflectionClass = new \ReflectionClass($sub_response);
@@ -391,7 +393,6 @@ class Process {
 				$reflectionProperty->setAccessible(true);
 				$reflectionProperty->setValue($sub_response, null); // removes the htmlContent data
 			}
-			
 		} else {
 			$adapter = false;
 		}
