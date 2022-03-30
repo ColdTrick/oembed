@@ -1,6 +1,11 @@
 Version history
 ===============
 
+3.0.2 (2022-03-30):
+
+- fixed: correctly cache the adapter
+- fixed: make sure dispatcher also has no unserializable dom documents
+
 3.0.1 (2022-03-11):
 
 - fixed: oembed adapter is cacheable on php8+
