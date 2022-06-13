@@ -2,20 +2,18 @@
 /**
  * Generate the embed code based on a provided adapter
  *
- * @uses $vars['url']     the original URL which will be embedded
- * @uses $vars['adapter'] the Embed\Adapters\Adapter to get information from
+ * @uses $vars['url']    the original URL which will be embedded
+ * @uses $vars['oembed'] the oembed information
  */
 
-use Embed\Adapters\Adapter;
-
-$adapter = elgg_extract('adapter', $vars);
-if (!$adapter instanceof Adapter) {
+$oembed = elgg_extract('oembed', $vars);
+if (empty($oembed)) {
 	return;
 }
 
-$adapter_type = $adapter->getType();
-if (elgg_view_exists("oembed/type/{$adapter_type}")) {
-	echo elgg_view("oembed/type/{$adapter_type}", $vars);
+$type = elgg_extract('type', $oembed, 'default');
+if (elgg_view_exists("oembed/type/{$type}")) {
+	echo elgg_view("oembed/type/{$type}", $vars);
 	return;
 }
 

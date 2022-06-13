@@ -2,10 +2,10 @@
 
 namespace ColdTrick\OEmbed;
 
-use Embed\Http\CurlDispatcher;
 use Embed\Http\Url;
-use Embed\Adapters\Adapter;
 use Embed\Embed;
+use Embed\Extractor;
+use Embed\OEmbed;
 
 class Process {
 	
@@ -25,22 +25,11 @@ class Process {
 	protected $blacklist;
 	
 	/**
-	 * @var CurlDispatcher
-	 */
-	protected $curldispatcher;
-	
-	/**
 	 * Create a new oEmbed processor
 	 *
 	 * @param string $text the text to parse
-	 *
-	 * @throws \InvalidArgumentException
 	 */
-	public function __construct($text) {
-		
-		if (!is_string($text)) {
-			throw new \InvalidArgumentException(__METHOD__ . ' needs the text argument to be a string: ' . gettype($text) . ' given');
-		}
+	public function __construct(string $text) {
 		
 		$this->text = $text;
 		
@@ -211,14 +200,14 @@ class Process {
 		
 		$url = elgg_trigger_plugin_hook('replace_url', 'oembed', ['url' => $url], $url);
 		
-		$adapter = $this->getAdapter($url);
-		if (empty($adapter)) {
+		$oembed = $this->getOEmbed($url);
+		if (empty($oembed)) {
 			return;
 		}
 		
 		return elgg_view('oembed/embed', [
 			'url' => $url,
-			'adapter' => $adapter,
+			'oembed' => $oembed,
 		]);
 	}
 	
@@ -297,36 +286,37 @@ class Process {
 	 *
 	 * @param string $url the url to fetch
 	 *
-	 * @return false|Adapter
+	 * @return false|array
 	 */
-	protected function getAdapter($url) {
+	protected function getOEmbed(string $url) {
 		
 		if (empty($url)) {
 			return false;
 		}
 		
-		$adapter = $this->getAdapterFromCache($url);
-		if (!is_null($adapter)) {
+		$oembed = $this->getOEmbedFromCache($url);
+		if (!is_null($oembed)) {
 			// loaded from cache
-			return $adapter;
+			return $oembed;
 		}
 		
 		try {
-			$dispatcher = $this->getCurlDispatcher();
+			$embed = new Embed();
 			
-			$adapter = Embed::create($url, [], $dispatcher);
+			// set custom adapters
+			$factory = $embed->getExtractorFactory();
+			$factory->addAdapter('microsoftstream.com', \ColdTrick\OEmbed\Adapters\MicrosoftStream\Extractor::class);
+			
+			// extract oembed data
+			$oembed = $embed->get($url)->getOEmbed()->all();
 		} catch (\Exception $e) {
-			$adapter = null;
+			$oembed = [];
 			elgg_log($e->getMessage());
 		}
 		
-		$this->cacheAdapter($url, $adapter);
-		
-		if (!$adapter instanceof Adapter) {
-			return false;
-		}
-		
-		return $adapter;
+		$this->cacheOEmbed($url, $oembed);
+
+		return is_array($oembed) ? $oembed : false;
 	}
 	
 	/**
@@ -334,10 +324,9 @@ class Process {
 	 *
 	 * @param string $url the url to get the adapter for
 	 *
-	 * @return void|false|Adapter
+	 * @return void|false|OEmbed
 	 */
-	protected function getAdapterFromCache($url) {
-		
+	protected function getOEmbedFromCache(string $url) {
 		if (empty($url)) {
 			return false;
 		}
@@ -345,106 +334,25 @@ class Process {
 		$crypto = elgg_build_hmac($url);
 		$cache_name = 'oembed_' . $crypto->getToken();
 		
-		$cache = elgg_load_system_cache($cache_name);
-		if (is_null($cache)) {
-			// not is cache or cache is disabled
-			return;
-		}
-		
-		return unserialize($cache);
+		return elgg_load_system_cache($cache_name);
 	}
 	
 	/**
-	 * Save an adapter to system cache
+	 * Save oembed data to system cache
 	 *
-	 * @param string  $url     the url for the adapter
-	 * @param Adapter $adapter the adapter to save
+	 * @param string $url    the url for the adapter
+	 * @param array  $oembed the oembed data to save
 	 *
 	 * @return bool
 	 */
-	protected function cacheAdapter($url, Adapter $adapter = null) {
-		
+	protected function cacheOEmbed(string $url, array $oembed) {
 		if (empty($url)) {
 			return false;
 		}
 		
 		$crypto = elgg_build_hmac($url);
 		$cache_name = 'oembed_' . $crypto->getToken();
-		
-		if ($adapter instanceof Adapter) {
-			// the htmlContent DOMDocument in the Response is not serializable, this is removed silently in PHP < 8.0 but crashes if on PHP 8+
-			$response = $adapter->getResponse();
-			
-			$reflectionClass = new \ReflectionClass($response);
-			$reflectionProperty = $reflectionClass->getProperty('htmlContent');
-			$reflectionProperty->setAccessible(true);
-			$reflectionProperty->setValue($response, null); // removes the htmlContent data
-			
-			// the dispatcher also has responses with htmlContent DOMDocuments
-			$dispatcher = $adapter->getDispatcher();
-			
-			$reflectionClass = new \ReflectionClass($dispatcher);
-			$reflectionProperty = $reflectionClass->getProperty('responses');
-			$reflectionProperty->setAccessible(true);
-			
-			foreach ($reflectionProperty->getValue($dispatcher) as $sub_response) {
-				$reflectionClass = new \ReflectionClass($sub_response);
-				$reflectionProperty = $reflectionClass->getProperty('htmlContent');
-				$reflectionProperty->setAccessible(true);
-				$reflectionProperty->setValue($sub_response, null); // removes the htmlContent data
-			}
-		} else {
-			$adapter = false;
-		}
-        		
-		return elgg_save_system_cache($cache_name, serialize($adapter));
-	}
-	
-	/**
-	 * Get a special cURL dispatcher with proxy support
-	 *
-	 * @return void|CurlDispatcher
-	 */
-	protected function getCurlDispatcher() {
-		
-		if (isset($this->curldispatcher)) {
-			if (empty($this->curldispatcher)) {
-				return;
-			}
-			
-			return $this->curldispatcher;
-		}
-		
-		$proxy_config = elgg_get_config('proxy');
-		if (empty($proxy_config) || !is_array($proxy_config)) {
-			return;
-		}
-		
-		$host = elgg_extract('host', $proxy_config);
-		if (empty($host)) {
-			return;
-		}
-		
-		$curl_settings = [
-			CURLOPT_PROXY => $host,
-		];
-		
-		$port = (int) elgg_extract('port', $proxy_config);
-		if (($port > 0) && ($port <= 65536)) {
-			$curl_settings[CURLOPT_PROXYPORT] = $port;
-		}
-		
-		if (!(bool) elgg_extract('verify_ssl', $proxy_config, true)) {
-			$curl_settings[CURLOPT_SSL_VERIFYHOST] = false;
-		}
-		
-		$username = elgg_extract('username', $proxy_config);
-		$password = elgg_extract('passowrd', $proxy_config);
-		if (!empty($username) && !empty($password)) {
-			$curl_settings[CURLOPT_PROXYUSERPWD] = "{$username}:{$password}";
-		}
-		
-		$this->curldispatcher = new CurlDispatcher($curl_settings);
-		return $this->curldispatcher;
+		        		
+		return elgg_save_system_cache($cache_name, $oembed);
 	}
 }

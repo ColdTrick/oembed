@@ -2,17 +2,18 @@
 /**
  * This is a fallback view and will try to generate embed code
  *
- * @uses $vars['url']     the original URL which will be embedded
- * @uses $vars['adapter'] the Embed\Adapters\Adapter to get information from
+ * @uses $vars['url']    the original URL which will be embedded
+ * @uses $vars['oembed'] the oembed information
  */
 
-use Embed\Adapters\Adapter;
-
-$adapter = elgg_extract('adapter', $vars);
-if (!$adapter instanceof Adapter) {
+$oembed = elgg_extract('oembed', $vars);
+if (empty($oembed)) {
 	return;
 }
 
+if (empty($oembed['html'])) {
+	return;
+}
 
 $new_height = (int) elgg_get_plugin_setting('default_height', 'oembed', 300);
 
@@ -43,7 +44,7 @@ $adjust_height = function($match) use ($new_height) {
 	return "height=\"{$new_height}\"";
 };
 
-$code = preg_replace_callback('/width=[\"\'](\d+\w*)[\"\']/', $adjust_width, $adapter->getCode());
+$code = preg_replace_callback('/width=[\"\'](\d+\w*)[\"\']/', $adjust_width, $oembed['html']);
 $code = preg_replace_callback('/height=[\"\'](\d+\w*)[\"\']/', $adjust_height, $code);
 
 echo $code;

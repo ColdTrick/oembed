@@ -2,14 +2,12 @@
 /**
  * Handle 'link' type embed code
  *
- * @uses $vars['url']     the original URL which will be embedded
- * @uses $vars['adapter'] the Embed\Adapters\Adapter to get information from
+ * @uses $vars['url']    the original URL which will be embedded
+ * @uses $vars['oembed'] the oembed information
  */
 
-use Embed\Adapters\Adapter;
-
-$adapter = elgg_extract('adapter', $vars);
-if (!$adapter instanceof Adapter) {
+$oembed = elgg_extract('oembed', $vars);
+if (empty($oembed)) {
 	return;
 }
 
