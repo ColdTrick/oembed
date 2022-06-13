@@ -1,11 +1,9 @@
 <?php
-
 /* @var $plugin \Elggplugin */
 $plugin = elgg_extract('entity', $vars);
 
 $site_url = elgg_get_site_url();
-$url = Embed\Http\Url::create($site_url);
-$domain = $url->getDomain();
+$domain = \ColdTrick\OEmbed\Url::getDomain($site_url);
 
 echo elgg_view_field([
 	'#type' => 'plaintext',

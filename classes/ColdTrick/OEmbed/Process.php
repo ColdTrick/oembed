@@ -2,9 +2,7 @@
 
 namespace ColdTrick\OEmbed;
 
-use Embed\Http\Url;
 use Embed\Embed;
-use Embed\Extractor;
 use Embed\OEmbed;
 
 class Process {
@@ -189,11 +187,6 @@ class Process {
 	 * @return void|string
 	 */
 	protected function replaceUrl($url) {
-		
-		if (empty($url)) {
-			return;
-		}
-		
 		if (!$this->validateURL($url)) {
 			return;
 		}
@@ -218,67 +211,20 @@ class Process {
 	 *
 	 * @return bool
 	 */
-	protected function validateURL($url) {
-		
+	protected function validateURL($url): bool {
 		if (empty($url)) {
 			return false;
 		}
 		
 		if (!empty($this->whitelist)) {
-			return $this->isWhitelisted($url);
+			return in_array(\ColdTrick\OEmbed\Url::getDomain($url), $this->whitelist);
 		}
 		
 		if (!empty($this->blacklist)) {
-			return !$this->isBlacklisted($url);
+			return in_array(\ColdTrick\OEmbed\Url::getDomain($url), $this->blacklist);
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Is the URL domain on the whitelist
-	 *
-	 * @param string $url the URL to check
-	 *
-	 * @return bool
-	 */
-	protected function isWhitelisted($url) {
-		
-		if (empty($url)) {
-			return false;
-		}
-		
-		if (empty($this->whitelist)) {
-			return false;
-		}
-		
-		$url_object = Url::create($url);
-		$domain = $url_object->getDomain();
-		
-		return in_array($domain, $this->whitelist);
-	}
-	
-	/**
-	 * Is the URL domain on the blacklist
-	 *
-	 * @param string $url the URL to check
-	 *
-	 * @return bool
-	 */
-	protected function isBlacklisted($url) {
-		
-		if (empty($url)) {
-			return false;
-		}
-		
-		if (empty($this->blacklist)) {
-			return false;
-		}
-		
-		$url_object = Url::create($url);
-		$domain = $url_object->getDomain();
-		
-		return in_array($domain, $this->blacklist);
 	}
 	
 	/**
@@ -289,7 +235,6 @@ class Process {
 	 * @return false|array
 	 */
 	protected function getOEmbed(string $url) {
-		
 		if (empty($url)) {
 			return false;
 		}
