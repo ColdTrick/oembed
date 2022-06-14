@@ -15,12 +15,12 @@ class Process {
 	/**
 	 * @var array whitelisted domains
 	 */
-	protected $whitelist;
+	protected $whitelist = [];
 	
 	/**
 	 * @var array blacklisted domains
 	 */
-	protected $blacklist;
+	protected $blacklist = [];
 	
 	/**
 	 * Create a new oEmbed processor
@@ -32,18 +32,14 @@ class Process {
 		$this->text = $text;
 		
 		$whitelist = elgg_get_plugin_setting('whitelist', 'oembed');
-		if (empty($whitelist)) {
-			$this->whitelist = [];
-		} else {
+		if (!empty($whitelist)) {
 			$whitelist = str_ireplace(PHP_EOL, ',', $whitelist);
 			
 			$this->whitelist = string_to_tag_array($whitelist);
 		}
 		
 		$blacklist = elgg_get_plugin_setting('blacklist', 'oembed');
-		if (empty($blacklist)) {
-			$this->blacklist = [];
-		} else {
+		if (!empty($blacklist)) {
 			$blacklist = str_ireplace(PHP_EOL, ',', $blacklist);
 			
 			$this->blacklist = string_to_tag_array($blacklist);
@@ -221,7 +217,7 @@ class Process {
 		}
 		
 		if (!empty($this->blacklist)) {
-			return in_array(\ColdTrick\OEmbed\Url::getDomain($url), $this->blacklist);
+			return !in_array(\ColdTrick\OEmbed\Url::getDomain($url), $this->blacklist);
 		}
 		
 		return true;
