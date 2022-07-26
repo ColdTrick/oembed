@@ -26,8 +26,8 @@ class Longtext {
 		}
 		
 		if (elgg_extract('sanitize', $vars, true)) {
-			// apply filter_tags before embed replacement to allow iframes
-			$value = filter_tags($value);
+			// apply sanitization before embed replacement to allow iframes
+			$value = elgg_sanitize_input($value);
 		}
 		$vars['sanitize'] = false;
 		

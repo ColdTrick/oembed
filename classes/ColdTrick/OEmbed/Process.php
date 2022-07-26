@@ -35,14 +35,14 @@ class Process {
 		if (!empty($whitelist)) {
 			$whitelist = str_ireplace(PHP_EOL, ',', $whitelist);
 			
-			$this->whitelist = string_to_tag_array($whitelist);
+			$this->whitelist = elgg_string_to_array($whitelist);
 		}
 		
 		$blacklist = elgg_get_plugin_setting('blacklist', 'oembed');
 		if (!empty($blacklist)) {
 			$blacklist = str_ireplace(PHP_EOL, ',', $blacklist);
 			
-			$this->blacklist = string_to_tag_array($blacklist);
+			$this->blacklist = elgg_string_to_array($blacklist);
 		}
 	}
 	
