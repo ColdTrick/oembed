@@ -19,7 +19,6 @@ $new_height = (int) elgg_get_plugin_setting('default_height', 'oembed', 300);
 
 // change embed width to 100%
 $adjust_width = function($match) use ($new_height) {
-	
 	if (!isset($match[1])) {
 		return $match[0];
 	}
@@ -36,7 +35,6 @@ $adjust_width = function($match) use ($new_height) {
 
 // adjust embed height to plugin setting (if any)
 $adjust_height = function($match) use ($new_height) {
-	
 	if (!isset($match[1])) {
 		return $match[0];
 	}

@@ -2,6 +2,9 @@
 
 namespace ColdTrick\OEmbed;
 
+/**
+ * Modify output/longtext output
+ */
 class Longtext {
 	
 	/**
@@ -9,13 +12,13 @@ class Longtext {
 	 *
 	 * This hook is registered on a high priority because it changes the 'sanitize' value because of filtering issues with iframes
 	 *
-	 * @param \Elgg\Hook $hook 'view_vars', 'output/longtext'
+	 * @param \Elgg\Event $event 'view_vars', 'output/longtext'
 	 *
 	 * @return void|array
 	 */
-	public static function process(\Elgg\Hook $hook) {
+	public static function process(\Elgg\Event $event) {
 		
-		$vars = $hook->getValue();
+		$vars = $event->getValue();
 		if (!(bool) elgg_extract('oembed', $vars, true)) {
 			return;
 		}
@@ -29,13 +32,14 @@ class Longtext {
 			// apply sanitization before embed replacement to allow iframes
 			$value = elgg_sanitize_input($value);
 		}
+		
 		$vars['sanitize'] = false;
 		
 		try {
 			$processor = Process::create($value);
 			$vars['value'] = $processor->parseText();
 		} catch (\InvalidArgumentException $e) {
-			// non text value passed to Proccessor
+			// non text value passed to Processor
 		}
 		
 		return $vars;

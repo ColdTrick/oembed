@@ -5,22 +5,25 @@ namespace ColdTrick\OEmbed;
 use Embed\Embed;
 use Embed\OEmbed;
 
+/**
+ * Process html to detect oEmbed URLs
+ */
 class Process {
 	
 	/**
 	 * @var string the text to process
 	 */
-	protected $text;
+	protected string $text;
 	
 	/**
 	 * @var array whitelisted domains
 	 */
-	protected $whitelist = [];
+	protected array $whitelist = [];
 	
 	/**
 	 * @var array blacklisted domains
 	 */
-	protected $blacklist = [];
+	protected array $blacklist = [];
 	
 	/**
 	 * Create a new oEmbed processor
@@ -28,7 +31,6 @@ class Process {
 	 * @param string $text the text to parse
 	 */
 	public function __construct(string $text) {
-		
 		$this->text = $text;
 		
 		$whitelist = elgg_get_plugin_setting('whitelist', 'oembed');
@@ -53,7 +55,7 @@ class Process {
 	 *
 	 * @return \ColdTrick\OEmbed\Process
 	 */
-	public static function create($text) {
+	public static function create(string $text): static {
 		return new static($text);
 	}
 	
@@ -66,7 +68,7 @@ class Process {
 	 *
 	 * @return string
 	 */
-	public function parseText() {
+	public function parseText(): string {
 		
 		$ignoreTags = [
 			'head',
@@ -83,40 +85,39 @@ class Process {
 			'embed',
 		];
 		
-        $chunks = preg_split('/(<.+?>)/is', $this->text, 0, PREG_SPLIT_DELIM_CAPTURE);
+		$chunks = preg_split('/(<.+?>)/is', $this->text, 0, PREG_SPLIT_DELIM_CAPTURE);
 		
-        $chunk_count = count($chunks);
-        $openTag = null;
+		$chunk_count = count($chunks);
+		$openTag = null;
 		for ($i = 0; $i < $chunk_count; $i++) {
-        	
-        	if (empty(trim($chunks[$i]))) {
-        		continue;
-        	}
-        	
-            if ($i % 2 === 0) { // even numbers are text
-                // Only process this chunk if there are no unclosed $ignoreTags
-                if (null === $openTag) {
-                    $replacement = $this->replaceText($chunks[$i]);
-                    if (!empty($replacement)) {
-                    	$chunks[$i] = $replacement;
-                    }
-                }
-            } else { // odd numbers are tags
-                // Only process this tag if there are no unclosed $ignoreTags
-                if (null === $openTag) {
-                    // Check whether this tag is contained in $ignoreTags and is not self-closing
-                    if (preg_match("`<(" . implode('|', $ignoreTags) . ").*(?<!/)>$`is", $chunks[$i], $matches)) {
-                        $openTag = $matches[1];
-                    }
-                } else {
-                    // Otherwise, check whether this is the closing tag for $openTag.
-                    if (preg_match('`</\s*' . $openTag . '>`i', $chunks[$i], $matches)) {
-                        $openTag = null;
-                    }
-                }
-            }
-        }
-        
+			if (empty(trim($chunks[$i]))) {
+				continue;
+			}
+			
+			if ($i % 2 === 0) { // even numbers are text
+				// Only process this chunk if there are no unclosed $ignoreTags
+				if ($openTag === null) {
+					$replacement = $this->replaceText($chunks[$i]);
+					if (!empty($replacement)) {
+						$chunks[$i] = $replacement;
+					}
+				}
+			} else { // odd numbers are tags
+				// Only process this tag if there are no unclosed $ignoreTags
+				if ($openTag === null) {
+					// Check whether this tag is contained in $ignoreTags and is not self-closing
+					if (preg_match('`<(' . implode('|', $ignoreTags) . ').*(?<!/)>$`is', $chunks[$i], $matches)) {
+						$openTag = $matches[1];
+					}
+				} else {
+					// Otherwise, check whether this is the closing tag for $openTag.
+					if (preg_match('`</\s*' . $openTag . '>`i', $chunks[$i], $matches)) {
+						$openTag = null;
+					}
+				}
+			}
+		}
+
 		// return new text
 		return implode('', $chunks);
 	}
@@ -129,7 +130,6 @@ class Process {
 	 * @return string
 	 */
 	protected function replaceText($text) {
-		
 		if (empty($text) || !is_string($text)) {
 			return $text;
 		}
@@ -155,28 +155,26 @@ class Process {
                 [^\s`!\-()\[\]{};:\'".,<>?«»“”‘’]  # not a space or one of these punct chars
               )
         ~';
-
-        $callback = function ($match) {
-            $pattern = "~^https?://~";
+		
+		$callback = function ($match) {
+			if (preg_match('~^https?://~', $match[0]) === 0) {
+				$match[0] = 'http://' . $match[0];
+			}
 			
-            if (0 === preg_match($pattern, $match[0])) {
-                $match[0] = 'http://' . $match[0];
-            }
-            
-            $replacement = $this->replaceUrl($match[0]);
-            if (empty($replacement)) {
-            	// nothing was replaced
-            	return $match[0];
-            }
-            
-            return $replacement;
-        };
-
-        return preg_replace_callback($pattern, $callback, $text);
+			$replacement = $this->replaceUrl($match[0]);
+			if (empty($replacement)) {
+				// nothing was replaced
+				return $match[0];
+			}
+			
+			return $replacement;
+		};
+		
+		return preg_replace_callback($pattern, $callback, $text);
 	}
 	
 	/**
-	 * Replace an URL with embed code
+	 * Replace a URL with embed code
 	 *
 	 * @param string $url the URL to replace
 	 *
@@ -187,7 +185,7 @@ class Process {
 			return;
 		}
 		
-		$url = elgg_trigger_plugin_hook('replace_url', 'oembed', ['url' => $url], $url);
+		$url = elgg_trigger_event_results('replace_url', 'oembed', ['url' => $url], $url);
 		
 		$oembed = $this->getOEmbed($url);
 		if (empty($oembed)) {
@@ -213,11 +211,11 @@ class Process {
 		}
 		
 		if (!empty($this->whitelist)) {
-			return in_array(\ColdTrick\OEmbed\Url::getDomain($url), $this->whitelist);
+			return in_array(Url::getDomain($url), $this->whitelist);
 		}
 		
 		if (!empty($this->blacklist)) {
-			return !in_array(\ColdTrick\OEmbed\Url::getDomain($url), $this->blacklist);
+			return !in_array(Url::getDomain($url), $this->blacklist);
 		}
 		
 		return true;
@@ -256,7 +254,7 @@ class Process {
 		}
 		
 		$this->cacheOEmbed($url, $oembed);
-
+		
 		return is_array($oembed) ? $oembed : false;
 	}
 	
@@ -286,14 +284,14 @@ class Process {
 	 *
 	 * @return bool
 	 */
-	protected function cacheOEmbed(string $url, array $oembed) {
+	protected function cacheOEmbed(string $url, array $oembed): bool {
 		if (empty($url)) {
 			return false;
 		}
 		
 		$crypto = elgg_build_hmac($url);
 		$cache_name = 'oembed_' . $crypto->getToken();
-		        		
+		
 		return elgg_save_system_cache($cache_name, $oembed);
 	}
 }
