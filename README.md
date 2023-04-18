@@ -12,8 +12,8 @@ Provides oEmbed support for URLs in text
 - This plugin tries to replace URLs in `output/longtext` with embed code. For example if you paste a YouTube URL it will be 
 replaced by the embed code for that URL.
 - Nothing is done to the original text, so if the plugin is disabled all original links are still present.
-- In order to control which URLs should be replace there is a plugin setting for a whitelist and a blacklist. If the whitelist is set only those 
-URLs will be replace and the blacklist is ignored. If only the blacklist is set, every URL except those on the blacklist will be replaced.
+- In order to control which URLs should be replaced there is a plugin setting for a whitelist and a blacklist. If the whitelist is set only those 
+URLs will be replaced and the blacklist is ignored. If only the blacklist is set, every URL except those on the blacklist will be replaced.
 
 ## Caching
 
@@ -28,9 +28,9 @@ In order to prevent the use of oEmbed on your use of `output/longtext` set a var
 
 ### Modifying valid URL
 
-Before an oEmbed adapter is created based on a valid URL a hook is triggered. This allows last minute changes to the URL (eg. adding
-vaidation tokens).
-The hook is `replace_url`, `oembed`. The return value should be an URL. in the `$params` you get the original url under `url`.
+Before an oEmbed adapter is created based on a valid URL an event is triggered. This allows last minute changes to the URL (eg. adding
+validation tokens).
+The event is `replace_url`, `oembed`. The return value should be a URL. in the `$params` you get the original url under `url`.
 
 ### Output views
 

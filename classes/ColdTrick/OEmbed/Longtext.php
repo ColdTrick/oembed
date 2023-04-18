@@ -10,7 +10,7 @@ class Longtext {
 	/**
 	 * Process oEmbed URLs in output/longtext
 	 *
-	 * This hook is registered on a high priority because it changes the 'sanitize' value because of filtering issues with iframes
+	 * This event handler is registered on a high priority because it changes the 'sanitize' value because of filtering issues with iframes
 	 *
 	 * @param \Elgg\Event $event 'view_vars', 'output/longtext'
 	 *
