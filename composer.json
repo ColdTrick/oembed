@@ -14,7 +14,7 @@
 		"embed/embed": "~4.4.0"
 	},
 	"conflict": {
-		"elgg/elgg": "<4.3"
+		"elgg/elgg": "<5.0"
 	},
 	"config": {
 		"allow-plugins": {
