@@ -10,15 +10,9 @@
 		"issues": "https://github.com/ColdTrick/oembed/issues"
 	},
 	"require": {
-		"composer/installers": "^1.0.8",
 		"embed/embed": "~4.4.0"
 	},
 	"conflict": {
 		"elgg/elgg": "<5.0"
-	},
-	"config": {
-		"allow-plugins": {
-			"composer/installers": true
-		}
 	}
 }
