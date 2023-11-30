@@ -3,7 +3,7 @@
 return [
 	'plugin' => [
 		'name' => 'oEmbed',
-		'version' => '5.0',
+		'version' => '5.0.1',
 	],
 	'events' => [
 		'view_vars' => [
