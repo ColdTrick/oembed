@@ -1,4 +1,5 @@
 <?php
+
 /* @var $plugin \Elggplugin */
 $plugin = elgg_extract('entity', $vars);
 

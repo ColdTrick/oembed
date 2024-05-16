@@ -14,18 +14,17 @@ class Longtext {
 	 *
 	 * @param \Elgg\Event $event 'view_vars', 'output/longtext'
 	 *
-	 * @return void|array
+	 * @return null|array
 	 */
-	public static function process(\Elgg\Event $event) {
-		
+	public static function process(\Elgg\Event $event): ?array {
 		$vars = $event->getValue();
 		if (!(bool) elgg_extract('oembed', $vars, true)) {
-			return;
+			return null;
 		}
 		
 		$value = elgg_extract('value', $vars);
 		if (empty($value)) {
-			return;
+			return null;
 		}
 		
 		if (elgg_extract('sanitize', $vars, true)) {

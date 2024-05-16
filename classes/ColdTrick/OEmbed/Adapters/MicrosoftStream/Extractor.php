@@ -1,11 +1,12 @@
 <?php
+
 namespace ColdTrick\OEmbed\Adapters\MicrosoftStream;
 
 use Embed\Extractor as Base;
+use Embed\Http\Crawler;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Embed\Http\Crawler;
 
 /**
  * Microsoft Stream extractor

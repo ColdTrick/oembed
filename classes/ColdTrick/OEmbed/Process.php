@@ -11,11 +11,6 @@ use Embed\OEmbed;
 class Process {
 	
 	/**
-	 * @var string the text to process
-	 */
-	protected string $text;
-	
-	/**
 	 * @var array whitelisted domains
 	 */
 	protected array $whitelist = [];
@@ -30,9 +25,7 @@ class Process {
 	 *
 	 * @param string $text the text to parse
 	 */
-	public function __construct(string $text) {
-		$this->text = $text;
-		
+	public function __construct(protected string $text) {
 		$whitelist = elgg_get_plugin_setting('whitelist', 'oembed');
 		if (!empty($whitelist)) {
 			$whitelist = str_ireplace(PHP_EOL, ',', $whitelist);
@@ -69,7 +62,6 @@ class Process {
 	 * @return string
 	 */
 	public function parseText(): string {
-		
 		$ignoreTags = [
 			'head',
 			'link',
@@ -129,8 +121,8 @@ class Process {
 	 *
 	 * @return string
 	 */
-	protected function replaceText($text) {
-		if (empty($text) || !is_string($text)) {
+	protected function replaceText(string $text): string {
+		if (empty($text)) {
 			return $text;
 		}
 		
@@ -178,18 +170,18 @@ class Process {
 	 *
 	 * @param string $url the URL to replace
 	 *
-	 * @return void|string
+	 * @return null|string
 	 */
-	protected function replaceUrl($url) {
+	protected function replaceUrl(string $url): ?string {
 		if (!$this->validateURL($url)) {
-			return;
+			return null;
 		}
 		
 		$url = elgg_trigger_event_results('replace_url', 'oembed', ['url' => $url], $url);
 		
 		$oembed = $this->getOEmbed($url);
 		if (empty($oembed)) {
-			return;
+			return null;
 		}
 		
 		return elgg_view('oembed/embed', [
@@ -205,7 +197,7 @@ class Process {
 	 *
 	 * @return bool
 	 */
-	protected function validateURL($url): bool {
+	protected function validateURL(string $url): bool {
 		if (empty($url)) {
 			return false;
 		}
@@ -222,15 +214,15 @@ class Process {
 	}
 	
 	/**
-	 * Get the embed adapter for an URL
+	 * Get the embed adapter for a URL
 	 *
 	 * @param string $url the url to fetch
 	 *
-	 * @return false|array
+	 * @return null|array
 	 */
-	protected function getOEmbed(string $url) {
+	protected function getOEmbed(string $url): ?array {
 		if (empty($url)) {
-			return false;
+			return null;
 		}
 		
 		$oembed = $this->getOEmbedFromCache($url);
@@ -255,7 +247,7 @@ class Process {
 		
 		$this->cacheOEmbed($url, $oembed);
 		
-		return is_array($oembed) ? $oembed : false;
+		return $oembed;
 	}
 	
 	/**
@@ -263,11 +255,11 @@ class Process {
 	 *
 	 * @param string $url the url to get the adapter for
 	 *
-	 * @return void|false|OEmbed
+	 * @return null|array
 	 */
-	protected function getOEmbedFromCache(string $url) {
+	protected function getOEmbedFromCache(string $url): ?array {
 		if (empty($url)) {
-			return false;
+			return null;
 		}
 		
 		$crypto = elgg_build_hmac($url);
