@@ -29,6 +29,6 @@ echo elgg_view_field([
 	'#label' => elgg_echo('oembed:settings:default_height'),
 	'#help' => elgg_echo('oembed:settings:default_height:help'),
 	'name' => 'params[default_height]',
-	'value' => $plugin->default_height ?: 300,
+	'value' => $plugin->default_height,
 	'min' => 0,
 ]);

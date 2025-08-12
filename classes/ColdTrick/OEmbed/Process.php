@@ -23,9 +23,10 @@ class Process {
 	/**
 	 * Create a new oEmbed processor
 	 *
-	 * @param string $text the text to parse
+	 * @param string $text      the text to parse
+	 * @param array  $view_vars view vars
 	 */
-	public function __construct(protected string $text) {
+	public function __construct(protected string $text, protected array $view_vars = []) {
 		$whitelist = elgg_get_plugin_setting('whitelist', 'oembed');
 		if (!empty($whitelist)) {
 			$whitelist = str_ireplace(PHP_EOL, ',', $whitelist);
@@ -44,12 +45,13 @@ class Process {
 	/**
 	 * Create a new processor
 	 *
-	 * @param string $text the text to parse
+	 * @param string $text      the text to parse
+	 * @param array  $view_vars view vars
 	 *
 	 * @return \ColdTrick\OEmbed\Process
 	 */
-	public static function create(string $text): static {
-		return new static($text);
+	public static function create(string $text, array $view_vars = []): static {
+		return new static($text, $view_vars);
 	}
 	
 	/**
@@ -184,10 +186,11 @@ class Process {
 			return null;
 		}
 		
-		return elgg_view('oembed/embed', [
-			'url' => $url,
-			'oembed' => $oembed,
-		]);
+		$vars = $this->view_vars;
+		$vars['url'] = $url;
+		$vars['oembed'] = $oembed;
+		
+		return elgg_view('oembed/embed', $vars);
 	}
 	
 	/**

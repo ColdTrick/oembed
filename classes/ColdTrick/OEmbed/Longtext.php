@@ -35,7 +35,7 @@ class Longtext {
 		$vars['sanitize'] = false;
 		
 		try {
-			$processor = Process::create($value);
+			$processor = Process::create($value, $vars);
 			$vars['value'] = $processor->parseText();
 		} catch (\InvalidArgumentException $e) {
 			// non text value passed to Processor
