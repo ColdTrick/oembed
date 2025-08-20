@@ -3,7 +3,7 @@
 return [
 	'plugin' => [
 		'name' => 'oEmbed',
-		'version' => '5.0.3',
+		'version' => '5.1',
 	],
 	'settings' => [
 		'default_height' => 300,

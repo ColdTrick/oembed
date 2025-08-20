@@ -1,6 +1,10 @@
 Version history
 ===============
 
+5.1 (2025-08-20):
+
+- added: option to set custom video height
+
 5.0.3 (2024-12-11):
 
 - several small chores/fixes
