@@ -18,6 +18,27 @@ if (empty($oembed['html'])) {
 $default_height = (int) elgg_get_plugin_setting('default_height', 'oembed');
 $new_height = (int) elgg_extract('oembed_height', $vars, $default_height);
 
+$thumbnail_only = elgg_extract('oembed_thumbnail_only', $vars);
+if ($thumbnail_only) {
+	$thumbnail_url = elgg_extract('thumbnail_url', $oembed);
+	if (empty($thumbnail_url)) {
+		return;
+	}
+	
+	echo elgg_view('output/url', [
+		'href' => elgg_extract('url', $vars),
+		'text' => elgg_view('output/img', [
+			'src' => $thumbnail_url,
+			'title' => elgg_extract('title', $oembed),
+			'width' => elgg_extract('thumbnail_width', $oembed),
+			'height' => elgg_extract('thumbnail_height', $oembed),
+		]),
+		'target' => '_blank',
+	]);
+	
+	return;
+}
+
 // change embed width to 100%
 $adjust_width = function($match) use ($new_height) {
 	if (!isset($match[1])) {
