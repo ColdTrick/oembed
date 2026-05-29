@@ -1,6 +1,10 @@
 Version history
 ===============
 
+5.2.1 (2026-05-29):
+
+- several small chores/fixes
+
 5.2 (2026-02-11):
 
 - changed: it is possible to request a thumbnail only version replacement
