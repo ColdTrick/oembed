@@ -155,16 +155,10 @@ class Process {
 				$match[0] = 'http://' . $match[0];
 			}
 			
-			$replacement = $this->replaceUrl($match[0]);
-			if (empty($replacement)) {
-				// nothing was replaced
-				return $match[0];
-			}
-			
-			return $replacement;
+			return $this->replaceUrl($match[0]) ?: $match[0];
 		};
 		
-		return preg_replace_callback($pattern, $callback, $text);
+		return preg_replace_callback($pattern, $callback, $text) ?? $text;
 	}
 	
 	/**
