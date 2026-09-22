@@ -1,6 +1,6 @@
 <?php
 
-/* @var $plugin \Elggplugin */
+/** @var \Elggplugin $plugin */
 $plugin = elgg_extract('entity', $vars);
 
 $site_url = elgg_get_site_url();
